@@ -1,0 +1,41 @@
+name: Check New Members
+
+on:
+  schedule:
+    # 每天 UTC 时间 00:00 自动运行
+    - cron: '* * * * *'
+
+jobs:
+  check-members:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      
+      - name: Check for new members
+        run: |
+          # 假设使用 GitHub CLI 查询仓库的协作者列表
+          # 安装 GitHub CLI
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+          sudo apt update
+          sudo apt install gh
+          
+          # 使用 GitHub API 获取当前的协作者列表，并保存到临时文件
+          gh api repos/:owner/:repo/collaborators | jq '.[].login' > current_members.txt
+          
+          # 比较 current_members.txt 和 members.txt，找出新增成员
+          # 这里假设 members.txt 已经存在并且是最新的
+          NEW_MEMBERS=$(comm -13 members.txt current_members.txt)
+          
+          # 对于每个新成员，执行一些操作
+          # 例如，创建分支、添加文件、创建 PR 等
+          # 这里需要填入具体的脚本或命令
+
+          # 更新 members.txt 文件
+          mv current_members.txt members.txt
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add members.txt
+          git commit -m "Update members list"
+          git push
