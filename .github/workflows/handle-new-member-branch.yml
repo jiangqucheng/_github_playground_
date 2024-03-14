@@ -3,7 +3,7 @@ name: Handle New Member Branch
 on:
   create:
     branches:
-      - 'member/*'
+      - 'member-*'
 
 jobs:
   add_member_file_and_create_pr:
@@ -23,6 +23,7 @@ jobs:
         run: |
           MEMBER_NAME=$(echo ${{ github.ref }} | sed 's|refs/heads/member/||')
           FILE_PATH="people/${MEMBER_NAME}.md"
+          
           cp template.md $FILE_PATH
           sed -i "s/{{ name }}/${MEMBER_NAME}/g" $FILE_PATH
           sed -i "s/{{ date }}/$(date +'%Y-%m-%d')/g" $FILE_PATH
