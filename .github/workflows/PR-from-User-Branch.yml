@@ -1,0 +1,23 @@
+name: Create Pull Request from "u/*" branch to main
+
+on:
+  push:
+    branches:
+      - 'u/*'
+
+jobs:
+  create_pull_request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          title: "Automated PR from ${{ github.ref }} to main"
+          branch: main
+          body: |
+            This Pull Request was automatically created from branch ${{ github.ref }}.
+          labels: automated
+          token: ${{ secrets.GITHUB_TOKEN }}
