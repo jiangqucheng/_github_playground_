@@ -31,7 +31,8 @@ jobs:
           sed -i "s/{{ date }}/$(date +'%Y-%m-%d')/g" $FILE_PATH
           git add $FILE_PATH
           git commit -m "Add new member file for ${MEMBER_NAME}"
-          git push origin "${{ github.head_ref }}"
+          git push
+          # git push origin "${{ github.head_ref }}"
 
       # - name: Push changes
       #   uses: ad-m/github-push-action@master
