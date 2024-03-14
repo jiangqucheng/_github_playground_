@@ -8,10 +8,8 @@ on:
 jobs:
   create_pull_request:
     runs-on: ubuntu-latest
+    if: github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/u/')
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v3
         with:
@@ -20,4 +18,4 @@ jobs:
           body: |
             This Pull Request was automatically created from branch ${{ github.ref }}.
           labels: automated
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GA_PUSH_COMMIT_SECRET }}
