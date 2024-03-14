@@ -1,0 +1,40 @@
+name: Handle New Member Branch
+
+on:
+  create:
+    branches:
+      - 'member/*'
+
+jobs:
+  add_member_file_and_create_pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repo
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+      
+      - name: Setup Git config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+
+      - name: Create Member File
+        run: |
+          MEMBER_NAME=$(echo ${{ github.ref }} | sed 's|refs/heads/member/||')
+          FILE_PATH="people/${MEMBER_NAME}.md"
+          cp template.md $FILE_PATH
+          sed -i "s/{{ name }}/${MEMBER_NAME}/g" $FILE_PATH
+          sed -i "s/{{ date }}/$(date +'%Y-%m-%d')/g" $FILE_PATH
+          git add $FILE_PATH
+          git commit -m "Add new member file for ${MEMBER_NAME}"
+          git push origin "${{ github.head_ref }}"
+
+      # - name: Create Pull Request
+      #   uses: repo-sync/pull-request@v2
+      #   with:
+      #     source_branch: "${{ github.head_ref }}"
+      #     destination_branch: "main"
+      #     pr_title: "New member added: $MEMBER_NAME"
+      #     pr_body: "Please review the new member file for $MEMBER_NAME."
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
