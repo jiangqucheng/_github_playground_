@@ -3,11 +3,12 @@ name: Handle New Member Branch
 on:
   create:
     branches:
-      - 'member-*'
+      - 'u/*'
 
 jobs:
   add_member_file_and_create_pr:
     runs-on: ubuntu-latest
+    if: github.ref_type == 'branch' && startsWith(github.ref, 'refs/heads/u/')
     steps:
       - name: Checkout the repo
         uses: actions/checkout@v2
@@ -21,9 +22,9 @@ jobs:
 
       - name: Create Member File
         run: |
-          MEMBER_NAME=$(echo ${{ github.ref }} | sed 's|refs/heads/member/||')
+          MEMBER_NAME=$(echo ${{ github.ref }} | sed 's|refs/heads/u/||')
           FILE_PATH="people/${MEMBER_NAME}.md"
-          
+          mkdir -p $(dirname $FILE_PATH)
           cp template.md $FILE_PATH
           sed -i "s/{{ name }}/${MEMBER_NAME}/g" $FILE_PATH
           sed -i "s/{{ date }}/$(date +'%Y-%m-%d')/g" $FILE_PATH
