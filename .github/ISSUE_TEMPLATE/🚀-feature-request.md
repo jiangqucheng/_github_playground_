@@ -2,9 +2,15 @@
 name: "\U0001F680 Feature request"
 about: Propose a feature for this project
 title: ''
-labels: ''
+labels: ["needs triage", "enhancement"]
 assignees: ''
-
+body: 
+  - type: markdown
+    attributes:
+      - value: "Please describe the desired enhancement."
+  - type: textarea
+    attributes:
+      - label: "What to enhance?"
 ---
 
 **Is your feature request related to a problem? Please describe.**
